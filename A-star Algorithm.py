@@ -1,101 +1,147 @@
-from collections import deque
 
-class Graph:
-    # example of adjacency list (or rather map)
-    # adjacency_list = {
-    # 'A': [('B', 1), ('C', 3), ('D', 7)],
-    # 'B': [('D', 5)],
-    # 'C': [('D', 12)]
-    # }
+def print_in_format(matrix):
+    for i in range(9):
 
-    def _init_(self, adjacency_list):
-        self.adjacency_list = adjacency_list
+        if i % 3 == 0 and i > 0:
+            print("")
 
-    def get_neighbors(self, v):
-        return self.adjacency_list[v]
 
-    # heuristic function with equal values for all nodes
-    def h(self, n):
-        H = {
-            'A': 1,
-            'B': 1,
-            'C': 1,
-            'D': 1
-        }
+        print(str(matrix[i]) + " ", end="")
 
-        return H[n]
 
-    def a_star_algorithm(self, start_node, stop_node):
-        # open_list is a list of nodes which have been visited, but who's neighbors
-        # haven't all been inspected, starts off with the start node
-        # closed_list is a list of nodes which have been visited
-        # and who's neighbors have been inspected
-        open_list = set([start_node])
-        closed_list = set([])
 
-        # g contains current distances from start_node to all other nodes
-        # the default value (if it's not found in the map) is +infinity
-        g = {}
+def count(s):
 
-        g[start_node] = 0
+    c = 0
 
-        # parents contains an adjacency map of all nodes
-        parents = {}
-        parents[start_node] = start_node
 
-        while len(open_list) > 0:
-            n = None
+    ideal = [1, 2, 3,
+             4, 5, 6,
+             7, 8, 0]
 
-            # find a node with the lowest value of f() - evaluation function
-            for v in open_list:
-                if n == None or g[v] + self.h(v) < g[n] + self.h(n):
-                    n = v;
 
-            if n == None:
-                print('Path does not exist!')
-                return None
 
-            # if the current node is the stop_node
-            # then we begin reconstructin the path from it to the start_node
-            if n == stop_node:
-                reconst_path = []
+    for i in range(9):
+        if s[i] != 0 and s[i] != ideal[i]:
+            c += 1
 
-                while parents[n] != n:
-                    reconst_path.append(n)
-                    n = parents[n]
 
-                reconst_path.append(start_node)
+    return c
 
-                reconst_path.reverse()
 
-                print('Path found: {}'.format(reconst_path))
-                return reconst_path
 
-            # for all neighbors of the current node do
-            for (m, weight) in self.get_neighbors(n):
-                # if the current node isn't in both open_list and closed_list
-                # add it to open_list and note n as it's parent
-                if m not in open_list and m not in closed_list:
-                    open_list.add(m)
-                    parents[m] = n
-                    g[m] = g[n] + weight
 
-                # otherwise, check if it's quicker to first visit n, then m
-                # and if it is, update parent data and g data
-                # and if the node was in the closed_list, move it to open_list
-                else:
-                    if g[m] > g[n] + weight:
-                        g[m] = g[n] + weight
-                        parents[m] = n
+def move(ar, p, st):
 
-                        if m in closed_list:
-                            closed_list.remove(m)
-                            open_list.add(m)
+    rh = 999999
 
-            # remove n from the open_list, and add it to closed_list
-            # because all of his neighbors were inspected
-            open_list.remove(n)
-            closed_list.add(n)
 
-        print('Path does not exist!')
-        return None
+    store_st = st.copy()
+
+
+    for i in range(len(ar)):
+
+
+
+        dupl_st = st.copy()
+
+
+        temp = dupl_st[p]
+        dupl_st[p] = dupl_st[arr[i]]
+        dupl_st[arr[i]] = temp
+
+
+        tmp_rh = count(dupl_st)
+
+
+
+        if tmp_rh < rh:
+            rh = tmp_rh
+            store_st = dupl_st.copy()
+
+
+    return store_st, rh
+
+
+
+state = [1, 2, 3,
+         0, 5, 6,
+         4, 7, 8]
+
+
+h = count(state)
+
+
+Level = 1
+
+
+print("\n------ Level " + str(Level) + " ------")
+print_in_format(state)
+print("\nHeuristic Value(Misplaced) : " + str(h))
+
+
+while h > 0:
+
+    pos = int(state.index(0))
+
+
+    Level += 1
+
+
+    if pos == 0:
+
+        arr = [1, 3]
+        state, h = move(arr, pos, state)
+
+
+    elif pos == 1:
+
+        arr = [0, 2, 4]
+        state, h = move(arr, pos, state)
+
+
+    elif pos == 2:
+
+        arr = [1, 5]
+        state, h = move(arr, pos, state)
+
+
+    elif pos == 3:
+
+        arr = [0, 4, 6]
+        state, h = move(arr, pos, state)
+
+
+    elif pos == 4:
+
+        arr = [1, 3, 5, 7]
+        state, h = move(arr, pos, state)
+
+
+    elif pos == 5:
+
+        arr = [2, 4, 8]
+        state, h = move(arr, pos, state)
+
+
+    elif pos == 6:
+
+        arr = [3, 7]
+        state, h = move(arr, pos, state)
+
+
+    elif pos == 7:
+
+        arr = [4, 6, 8]
+        state, h = move(arr, pos, state)
+
+
+    elif pos == 8:
+
+        arr = [5, 6]
+        state, h = move(arr, pos, state)
+
+
+    print("\n------ Level " + str(Level) + " ------")
+    print_in_format(state)
+    print("\nHeuristic Value(Misplaced) : " + str(h))
